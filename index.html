@@ -1,18 +1,72 @@
-<!DOCTYPE html>
-<html>
-<body>
+1. Create a Custom Table View Cell with Checkbox:
 
-<h2>HTML Forms</h2>
+------------------------------
 
-<form action="/action_page.php">
-  <label for="fname">First name:</label><br>
-  <input type="text" id="fname" name="fname" value="John"><br>
-  <label for="lname">Last name:</label><br>
-  <input type="text" id="lname" name="lname" value="Doe"><br><br>
-  <input type="submit" value="Buttom">
-</form> 
 
-<p>If you click the "Submit" button, the form-data will be sent to a page called "/action_page.php".</p>
+import UIKit
 
-</body>
-</html>
+class CustomTableViewCell: UITableViewCell {
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var checkboxButton: UIButton!
+    
+    // Define an action for checkbox button
+    @IBAction func checkboxTapped(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+    }
+}
+
+------------------------------
+
+
+
+
+2. Set up the TableView in your ViewController:
+
+-------------------------------
+
+import UIKit
+
+class YourViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    @IBOutlet weak var tableView: UITableView!
+    
+    var data = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9", "Item 10"] 
+    var selectedRows = Set<Int>() 
+    var totalsum = 0 // Variable to store the sum
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return data.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomTableViewCell
+        
+        cell.titleLabel.text = data[indexPath.row]
+        cell.checkboxButton.isSelected = selectedRows.contains(indexPath.row)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if selectedRows.contains(indexPath.row) {
+            selectedRows.remove(indexPath.row)
+            totalsum -= indexPath.row
+        } else {
+            selectedRows.insert(indexPath.row)
+            totalsum += indexPath.row
+        }
+        
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Update your UI with the new totalsum
+    }
+}
+
+-----------------------
