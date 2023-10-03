@@ -1,0 +1,44 @@
+import UIKit
+
+class YourViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    @IBOutlet weak var tableView: UITableView!
+    
+    var data = ["Item 1", "Item 2", "Item 3"]
+    var selectedRow: Int? // To keep track of the selected row
+    var totalsum = 0 // Variable to store the sum
+    
+    // ... (rest of your code)
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return data.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomTableViewCell
+        
+        cell.titleLabel.text = data[indexPath.row]
+        
+        let isSelected = indexPath.row == selectedRow
+        cell.setCheckboxSelected(isSelected)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if selectedRow == indexPath.row {
+            selectedRow = nil
+            totalsum = 0 // Reset totalsum when no row is selected
+        } else {
+            selectedRow = indexPath.row
+            totalsum = indexPath.row // Set totalsum to the selected row index
+        }
+        
+        tableView.reloadData() // Reload the table view to update checkboxes
+        updateTotalSumLabel() // Update your UI with the new totalsum
+    }
+    
+    func updateTotalSumLabel() {
+        // Assuming you have a label named totalSumLabel
+        totalSumLabel.text = "Total Sum: \(totalsum)"
+    }
+}
